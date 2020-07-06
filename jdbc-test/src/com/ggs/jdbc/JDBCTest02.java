@@ -1,0 +1,56 @@
+package com.ggs.jdbc;
+
+import java.sql.*;
+import java.util.ResourceBundle;
+
+public class JDBCTest02 {
+    public static void main(String[] args) {
+        ResourceBundle Bundle = ResourceBundle.getBundle("jdbc");
+        String driver = Bundle.getString("driver");
+        String url = Bundle.getString("url");
+        String user = Bundle.getString("user");
+        String password = Bundle.getString("password");
+
+        Connection c = null;
+        Statement s = null;
+        ResultSet rs = null;
+        try {
+            Class.forName(driver);
+            c = DriverManager.getConnection(url, user, password);
+            s = c.createStatement();
+            rs = s.executeQuery("select empno,ename,sal from emp");
+            while (rs.next()) {
+                int empno = rs.getInt("empno");
+                String ename = rs.getString("ename");
+                double sal = rs.getDouble("sal");
+                System.out.println(empno + "," + ename + "," + sal);
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+            if (s != null) {
+                try {
+                    s.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+            if (c != null) {
+                try {
+                    c.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+    }
+}
